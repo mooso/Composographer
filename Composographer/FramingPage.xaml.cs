@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Phone.UI.Input;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -44,8 +45,16 @@ namespace Composographer
 				{
 					await image.SetSourceAsync(stream);
 					_chosenImage.Source = image;
+					HardwareButtons.BackPressed += HandleBackFromOpen;
 				}
 			}
+		}
+
+		private void HandleBackFromOpen(object sender, BackPressedEventArgs args)
+		{
+			Frame.Navigate(typeof(MainPage));
+			args.Handled = true;
+			HardwareButtons.BackPressed -= HandleBackFromOpen;
 		}
 	}
 }
