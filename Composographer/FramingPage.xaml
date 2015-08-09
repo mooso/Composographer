@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="Composographer.MainPage"
+    x:Class="Composographer.FramingPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Composographer"
@@ -9,8 +9,8 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
   <Grid>
-    <Button x:Name="newProjectButton" HorizontalAlignment="Left" VerticalAlignment="Top" Click="newProjectButton_Click">
-      New Project
-    </Button>
+    <Canvas Name="_mainCanvas">
+      <TextBox Name="_chosenImage" />
+    </Canvas>
   </Grid>
 </Page>
