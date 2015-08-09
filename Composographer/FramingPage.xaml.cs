@@ -24,8 +24,6 @@ namespace Composographer
 	/// </summary>
 	public sealed partial class FramingPage : Page
 	{
-		private StorageFile _framingImageFile;
-
 		public FramingPage()
 		{
 			this.InitializeComponent();
@@ -36,13 +34,17 @@ namespace Composographer
 		/// </summary>
 		/// <param name="e">Event data that describes how this page was reached.
 		/// This parameter is typically used to configure the page.</param>
-		protected override void OnNavigatedTo(NavigationEventArgs e)
+		protected override async void OnNavigatedTo(NavigationEventArgs e)
 		{
 			var file = e.Parameter as StorageFile;
 			if (file != null)
 			{
-				_framingImageFile = file;
-				_chosenImage.Text = file.DisplayName;
+				var image = new BitmapImage();
+				using (var stream = await file.OpenReadAsync())
+				{
+					await image.SetSourceAsync(stream);
+					_chosenImage.Source = image;
+				}
 			}
 		}
 	}
