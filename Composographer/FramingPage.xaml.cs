@@ -25,6 +25,8 @@ namespace Composographer
 	/// </summary>
 	public sealed partial class FramingPage : Page
 	{
+		private CompoProject _currentProject;
+
 		public FramingPage()
 		{
 			this.InitializeComponent();
@@ -40,21 +42,19 @@ namespace Composographer
 			var file = e.Parameter as StorageFile;
 			if (file != null)
 			{
-				var image = new BitmapImage();
-				using (var stream = await file.OpenReadAsync())
-				{
-					await image.SetSourceAsync(stream);
-					_chosenImage.Source = image;
-					HardwareButtons.BackPressed += HandleBackFromOpen;
-				}
+				_currentProject = await CompoProject.NewFromImage(_mainCanvas, file);
+				HardwareButtons.BackPressed += HandleBackFromOpen;
 			}
 		}
 
 		private void HandleBackFromOpen(object sender, BackPressedEventArgs args)
 		{
-			Frame.Navigate(typeof(MainPage));
-			args.Handled = true;
-			HardwareButtons.BackPressed -= HandleBackFromOpen;
+			if (Frame != null && Frame.IsEnabled)
+			{
+				Frame.Navigate(typeof(MainPage));
+				args.Handled = true;
+				HardwareButtons.BackPressed -= HandleBackFromOpen;
+			}
 		}
 	}
 }

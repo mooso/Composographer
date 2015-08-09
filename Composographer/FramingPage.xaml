@@ -9,6 +9,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
   <Grid>
-    <Image Name="_chosenImage" Stretch="Fill" />
+    <Canvas x:Name="_mainCanvas">
+    </Canvas>
   </Grid>
 </Page>

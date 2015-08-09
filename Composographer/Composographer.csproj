@@ -83,6 +83,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CompoProject.cs" />
     <Compile Include="FramingPage.xaml.cs">
       <DependentUpon>FramingPage.xaml</DependentUpon>
     </Compile>
