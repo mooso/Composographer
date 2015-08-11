@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Composographer.Data;
+using Composographer.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,7 +27,7 @@ namespace Composographer
 	/// </summary>
 	public sealed partial class FramingPage : Page
 	{
-		private CompoProject _currentProject;
+		private readonly CompoProjectViewModel _viewModel = new CompoProjectViewModel();
 
 		public FramingPage()
 		{
@@ -42,10 +44,12 @@ namespace Composographer
 			var file = e.Parameter as StorageFile;
 			if (file != null)
 			{
-				_currentProject = await CompoProject.NewFromImage(_mainCanvas, file);
+				_viewModel.Project = await CompoProject.NewFromImage(file);
 				HardwareButtons.BackPressed += HandleBackFromOpen;
 			}
 		}
+
+		public CompoProjectViewModel ViewModel{ get { return _viewModel; } }
 
 		private void HandleBackFromOpen(object sender, BackPressedEventArgs args)
 		{

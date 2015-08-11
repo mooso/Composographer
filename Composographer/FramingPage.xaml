@@ -6,10 +6,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+  DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
   <Grid>
     <Canvas x:Name="_mainCanvas">
+      <Image x:Name="_mainImage" Source="{Binding Image}" />
     </Canvas>
   </Grid>
 </Page>
