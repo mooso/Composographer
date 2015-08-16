@@ -9,6 +9,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Phone.UI.Input;
 using Windows.Storage;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -17,6 +18,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Shapes;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -45,11 +47,33 @@ namespace Composographer
 			if (file != null)
 			{
 				_viewModel.Project = await CompoProject.NewFromImage(file);
+				RefreshCanvas();
 				HardwareButtons.BackPressed += HandleBackFromOpen;
 			}
 		}
 
 		public CompoProjectViewModel ViewModel{ get { return _viewModel; } }
+
+		private void RefreshCanvas()
+		{
+			_mainCanvas.Children.Clear();
+			_mainCanvas.Children.Add(new Image() { Source = _viewModel.Image });
+			foreach (var frame in _viewModel.Frames)
+			{
+				var frameRectangle = new Rectangle()
+				{
+					Width = frame.Width,
+					Height = frame.Height,
+					Stroke = new SolidColorBrush()
+					{
+						Color = Colors.White,						
+					},
+				};
+				frameRectangle.SetValue(Canvas.LeftProperty, frame.X);
+				frameRectangle.SetValue(Canvas.TopProperty, frame.Y);
+				_mainCanvas.Children.Add(frameRectangle);
+			}
+		}
 
 		private void HandleBackFromOpen(object sender, BackPressedEventArgs args)
 		{

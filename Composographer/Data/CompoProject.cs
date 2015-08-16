@@ -32,6 +32,14 @@ namespace Composographer.Data
 
 		public string ImageFilePath { get { return _imageFilePath; } }
 		public BitmapImage Image { get { return _image; } }
+		public IEnumerable<CompoFrame> Frames { get { return _frames; } }
+		public double PixelsPerInch
+		{
+			get
+			{
+				return _image.PixelWidth / _fullWidth;
+			}
+		}
 
 		public async static Task<CompoProject> NewFromImage(StorageFile imageFile)
 		{
@@ -40,13 +48,29 @@ namespace Composographer.Data
 			{
 				await image.SetSourceAsync(stream);
 			}
-			return new CompoProject(
+			var height = image.PixelHeight * DefaultWidth / image.PixelWidth;
+      return new CompoProject(
 				imageFilePath: imageFile.Path,
 				image: image,
-				fullHeight: image.PixelHeight * DefaultWidth / image.PixelWidth,
+				fullHeight: height,
 				fullWidth: DefaultWidth,
-				frames: Enumerable.Empty<CompoFrame>()
+				frames: Gridify(DefaultWidth, height, 2, 2)
 			);
+		}
+
+		private static IEnumerable<CompoFrame> Gridify(double width, double height, int numHorizontal, int numVertical)
+		{
+			double frameWidth = width / numHorizontal,
+				frameHeight = height / numVertical;
+			for (int row = 0; row < numVertical; row++)
+				for (int column = 0; column < numHorizontal; column++)
+				{
+					yield return new CompoFrame(
+						x: column * frameWidth,
+						y: row * frameHeight,
+						width: frameWidth,
+						height: frameHeight);
+				}
 		}
 	}
 }

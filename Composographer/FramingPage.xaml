@@ -10,8 +10,11 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
   <Grid>
-    <Canvas x:Name="_mainCanvas">
-      <Image x:Name="_mainImage" Source="{Binding Image}" />
+    <Canvas x:Name="_mainCanvas"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Height="{Binding Image.Height}"
+            Width="{Binding Image.Width}">
     </Canvas>
   </Grid>
 </Page>
