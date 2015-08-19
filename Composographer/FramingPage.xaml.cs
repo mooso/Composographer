@@ -43,13 +43,19 @@ namespace Composographer
 		/// This parameter is typically used to configure the page.</param>
 		protected override async void OnNavigatedTo(NavigationEventArgs e)
 		{
-			var file = e.Parameter as StorageFile;
-			if (file != null)
+			StorageFile file;
+			CompoProject project;
+			if ((file = e.Parameter as StorageFile) != null)
 			{
 				_viewModel.Project = await CompoProject.NewFromImage(file);
 				RefreshCanvas();
-				HardwareButtons.BackPressed += HandleBackFromOpen;
 			}
+			else if ((project = e.Parameter as CompoProject) != null)
+			{
+				_viewModel.Project = project;
+				RefreshCanvas();
+			}
+			HardwareButtons.BackPressed += HandleBackFromOpen;
 		}
 
 		public CompoProjectViewModel ViewModel{ get { return _viewModel; } }
@@ -57,7 +63,9 @@ namespace Composographer
 		private void RefreshCanvas()
 		{
 			_mainCanvas.Children.Clear();
-			_mainCanvas.Children.Add(new Image() { Source = _viewModel.Image });
+			var mainImage = new Image() { Source = _viewModel.Image };
+			mainImage.PointerPressed += MainImage_PointerPressed;
+      _mainCanvas.Children.Add(mainImage);
 			foreach (var frame in _viewModel.Frames)
 			{
 				var frameRectangle = new Rectangle()
@@ -73,6 +81,11 @@ namespace Composographer
 				frameRectangle.SetValue(Canvas.TopProperty, frame.Y);
 				_mainCanvas.Children.Add(frameRectangle);
 			}
+		}
+
+		private void MainImage_PointerPressed(object sender, PointerRoutedEventArgs e)
+		{
+			Frame.Navigate(typeof(ImageCapturePage), _viewModel.Project);
 		}
 
 		private void HandleBackFromOpen(object sender, BackPressedEventArgs args)
