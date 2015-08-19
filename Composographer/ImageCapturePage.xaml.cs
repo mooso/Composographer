@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
@@ -29,6 +30,7 @@ namespace Composographer
 	{
 		private readonly MediaCapture _mediaCapture = new MediaCapture();
 		private CompoProject _project;
+		private CompoFrame _targetFrame;
 
 		public ImageCapturePage()
 		{
@@ -42,7 +44,9 @@ namespace Composographer
 		/// This parameter is typically used to configure the page.</param>
 		protected override async void OnNavigatedTo(NavigationEventArgs e)
 		{
-			_project = (CompoProject)e.Parameter;
+			var myArgs = (ImageCapturePageArguments)e.Parameter;
+			_project = myArgs.Project;
+			_targetFrame = myArgs.TargetFrame;
 			await _mediaCapture.InitializeAsync();
 			_imageCapture.Source = _mediaCapture;
 			await _mediaCapture.StartPreviewAsync();
@@ -51,10 +55,11 @@ namespace Composographer
 
 		private async void CaptureButton_Click(object sender, RoutedEventArgs e)
 		{
+			await _mediaCapture.StopPreviewAsync();
 			var imageFormat = ImageEncodingProperties.CreateJpeg();
 			var file = await ApplicationData.Current.LocalFolder.CreateFileAsync("FramingPhoto.jpg", CreationCollisionOption.GenerateUniqueName);
 			await _mediaCapture.CapturePhotoToStorageFileAsync(imageFormat, file);
-			// TODO: put the file in the project
+			_targetFrame.SetImage(file.Path, new BitmapImage(new Uri(file.Path)));
 			Frame.Navigate(typeof(FramingPage), _project);
 		}
 	}

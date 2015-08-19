@@ -80,12 +80,32 @@ namespace Composographer
 				frameRectangle.SetValue(Canvas.LeftProperty, frame.X);
 				frameRectangle.SetValue(Canvas.TopProperty, frame.Y);
 				_mainCanvas.Children.Add(frameRectangle);
+				if (frame.Frame.Image != null)
+				{
+					var frameImage = new Image()
+					{
+						Width = frame.Width,
+						Height = frame.Height,
+						Source = frame.Frame.Image,
+					};
+					frameImage.SetValue(Canvas.LeftProperty, frame.X);
+					frameImage.SetValue(Canvas.TopProperty, frame.Y);
+					_mainCanvas.Children.Add(frameImage);
+				}
 			}
 		}
 
 		private void MainImage_PointerPressed(object sender, PointerRoutedEventArgs e)
 		{
-			Frame.Navigate(typeof(ImageCapturePage), _viewModel.Project);
+			var position = e.GetCurrentPoint(_mainCanvas).Position;
+			foreach (var frame in _viewModel.Frames)
+			{
+				if (position.X > frame.X && position.X < (frame.X + frame.Width)
+					&& position.Y > frame.Y && position.Y < (frame.Y + frame.Height))
+				{
+					Frame.Navigate(typeof(ImageCapturePage), new ImageCapturePageArguments(_viewModel.Project, frame.Frame));
+				}
+			}
 		}
 
 		private void HandleBackFromOpen(object sender, BackPressedEventArgs args)

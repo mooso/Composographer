@@ -91,6 +91,7 @@
     <Compile Include="ImageCapturePage.xaml.cs">
       <DependentUpon>ImageCapturePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ImageCapturePageArguments.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>

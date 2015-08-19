@@ -25,5 +25,6 @@ namespace Composographer.ViewModels
 		public double Y { get { return _frame.Y * _pixelsPerInch; } }
 		public double Width { get { return _frame.Width * _pixelsPerInch; } }
 		public double Height { get { return _frame.Height * _pixelsPerInch; } }
+		public CompoFrame Frame { get { return _frame; } }
 	}
 }
