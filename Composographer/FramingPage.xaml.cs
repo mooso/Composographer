@@ -65,7 +65,7 @@ namespace Composographer
 			_mainCanvas.Children.Clear();
 			var mainImage = new Image() { Source = _viewModel.Image };
 			mainImage.PointerPressed += MainImage_PointerPressed;
-      _mainCanvas.Children.Add(mainImage);
+			_mainCanvas.Children.Add(mainImage);
 			foreach (var frame in _viewModel.Frames)
 			{
 				var frameRectangle = new Rectangle()
@@ -74,7 +74,7 @@ namespace Composographer
 					Height = frame.Height,
 					Stroke = new SolidColorBrush()
 					{
-						Color = Colors.White,						
+						Color = Colors.White,
 					},
 				};
 				frameRectangle.SetValue(Canvas.LeftProperty, frame.X);
@@ -93,6 +93,19 @@ namespace Composographer
 					_mainCanvas.Children.Add(frameImage);
 				}
 			}
+			ScaleToFit();
+		}
+
+		private void ScaleToFit()
+		{
+			var fitX = _mainCanvas.ActualWidth / _viewModel.Image.PixelWidth;
+			var fitY = _mainCanvas.ActualHeight / _viewModel.Image.PixelHeight;
+			var minScale = Math.Min(fitX, fitY);
+			_mainCanvas.RenderTransform = new ScaleTransform()
+			{
+				ScaleX = minScale,
+				ScaleY = minScale,
+			};
 		}
 
 		private void MainImage_PointerPressed(object sender, PointerRoutedEventArgs e)
