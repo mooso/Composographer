@@ -98,6 +98,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\CompoFrameViewModel.cs" />
     <Compile Include="ViewModels\CompoProjectViewModel.cs" />
+    <Compile Include="ViewModels\FitMode.cs" />
+    <Compile Include="ViewModels\ImageLoader.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

@@ -34,6 +34,10 @@ namespace Composographer
 		public FramingPage()
 		{
 			this.InitializeComponent();
+			_mainCanvas.SizeChanged += async (sender, args) =>
+			{
+				await _viewModel.Scale((uint)args.NewSize.Width, (uint)args.NewSize.Height);
+			};
 		}
 
 		/// <summary>
@@ -47,12 +51,15 @@ namespace Composographer
 			CompoProject project;
 			if ((file = e.Parameter as StorageFile) != null)
 			{
-				_viewModel.Project = await CompoProject.NewFromImage(file);
-				RefreshCanvas();
+				project = await CompoProject.NewFromImage(file);
 			}
-			else if ((project = e.Parameter as CompoProject) != null)
+			else
 			{
-				_viewModel.Project = project;
+				project = e.Parameter as CompoProject;
+      }
+			if (project != null)
+			{
+				await _viewModel.LoadProject(project);
 				RefreshCanvas();
 			}
 			HardwareButtons.BackPressed += HandleBackFromOpen;
@@ -80,32 +87,19 @@ namespace Composographer
 				frameRectangle.SetValue(Canvas.LeftProperty, frame.X);
 				frameRectangle.SetValue(Canvas.TopProperty, frame.Y);
 				_mainCanvas.Children.Add(frameRectangle);
-				if (frame.Frame.Image != null)
+				if (frame.Image != null)
 				{
 					var frameImage = new Image()
 					{
 						Width = frame.Width,
 						Height = frame.Height,
-						Source = frame.Frame.Image,
+						Source = frame.Image,
 					};
 					frameImage.SetValue(Canvas.LeftProperty, frame.X);
 					frameImage.SetValue(Canvas.TopProperty, frame.Y);
 					_mainCanvas.Children.Add(frameImage);
 				}
 			}
-			ScaleToFit();
-		}
-
-		private void ScaleToFit()
-		{
-			var fitX = _mainCanvas.ActualWidth / _viewModel.Image.PixelWidth;
-			var fitY = _mainCanvas.ActualHeight / _viewModel.Image.PixelHeight;
-			var minScale = Math.Min(fitX, fitY);
-			_mainCanvas.RenderTransform = new ScaleTransform()
-			{
-				ScaleX = minScale,
-				ScaleY = minScale,
-			};
 		}
 
 		private void MainImage_PointerPressed(object sender, PointerRoutedEventArgs e)

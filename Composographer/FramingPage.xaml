@@ -12,9 +12,7 @@
   <Grid>
     <Canvas x:Name="_mainCanvas"
             HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            Height="{Binding Image.Height}"
-            Width="{Binding Image.Width}">
+            VerticalAlignment="Stretch">
     </Canvas>
   </Grid>
 </Page>

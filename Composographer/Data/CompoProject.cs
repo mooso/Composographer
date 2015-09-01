@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
@@ -16,42 +17,33 @@ namespace Composographer.Data
 		private double _fullHeight;
 		private double _fullWidth;
 		private List<CompoFrame> _frames;
-		private BitmapImage _image;
 		private const double DefaultWidth = 24;
 
-		private CompoProject(string imageFilePath, BitmapImage image,
+		private CompoProject(string imageFilePath,
 			double fullHeight, double fullWidth,
 			IEnumerable<CompoFrame> frames)
 		{
 			_imageFilePath = imageFilePath;
-			_image = image;
 			_fullHeight = fullHeight;
 			_fullWidth = fullWidth;
 			_frames = frames.ToList();
 		}
 
 		public string ImageFilePath { get { return _imageFilePath; } }
-		public BitmapImage Image { get { return _image; } }
+		public double FullWidth { get { return _fullWidth; } }
+		public double FullHeight { get { return _fullHeight; } }
 		public IEnumerable<CompoFrame> Frames { get { return _frames; } }
-		public double PixelsPerInch
-		{
-			get
-			{
-				return _image.PixelWidth / _fullWidth;
-			}
-		}
 
 		public async static Task<CompoProject> NewFromImage(StorageFile imageFile)
 		{
-			var image = new BitmapImage();
-			using (var stream = await imageFile.OpenReadAsync())
+			double height;
+			using (var fileStream = await imageFile.OpenReadAsync())
 			{
-				await image.SetSourceAsync(stream);
+				var decoder = await BitmapDecoder.CreateAsync(fileStream);
+				height = decoder.PixelHeight * DefaultWidth / decoder.PixelWidth;
 			}
-			var height = image.PixelHeight * DefaultWidth / image.PixelWidth;
-      return new CompoProject(
+			return new CompoProject(
 				imageFilePath: imageFile.Path,
-				image: image,
 				fullHeight: height,
 				fullWidth: DefaultWidth,
 				frames: Gridify(DefaultWidth, height, 2, 2)

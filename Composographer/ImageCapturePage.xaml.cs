@@ -49,6 +49,8 @@ namespace Composographer
 			_targetFrame = myArgs.TargetFrame;
 			await _mediaCapture.InitializeAsync();
 			_imageCapture.Source = _mediaCapture;
+			_mediaCapture.SetPreviewRotation(VideoRotation.Clockwise90Degrees);
+			_mediaCapture.SetRecordRotation(VideoRotation.Clockwise90Degrees);
 			await _mediaCapture.StartPreviewAsync();
 			HardwareButtons.BackPressed += (sender, args) => Frame.Navigate(typeof(FramingPage), _project);
 		}
@@ -59,7 +61,7 @@ namespace Composographer
 			var imageFormat = ImageEncodingProperties.CreateJpeg();
 			var file = await ApplicationData.Current.LocalFolder.CreateFileAsync("FramingPhoto.jpg", CreationCollisionOption.GenerateUniqueName);
 			await _mediaCapture.CapturePhotoToStorageFileAsync(imageFormat, file);
-			_targetFrame.SetImage(file.Path, new BitmapImage(new Uri(file.Path)));
+			_targetFrame.SetImage(file.Path);
 			Frame.Navigate(typeof(FramingPage), _project);
 		}
 	}
